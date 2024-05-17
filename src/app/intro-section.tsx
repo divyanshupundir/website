@@ -13,7 +13,7 @@ export function IntroSection() {
       />
       <div className="absolute h-full w-full bg-gradient-to-r from-black/90 to-black/70" />
       <div className="absolute">
-        <h1 className="m-8 font-mono text-6xl">divyanshu pundir</h1>
+        <h1 className="m-8 text-6xl">divyanshu pundir</h1>
         <div className="m-8 flex gap-8">
           <Item first="software" second="engineer" />
           <Item first="android" second="developer" />
