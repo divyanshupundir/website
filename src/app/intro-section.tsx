@@ -16,8 +16,8 @@ export function IntroSection() {
         <h1 className="m-8 text-4xl sm:text-6xl">divyanshu pundir</h1>
         <div className="m-8 flex flex-col gap-4 sm:flex-row sm:gap-8">
           <Item first="software" second="engineer" />
-          <Item first="android" second="developer" />
           <Item first="open-source" second="contributor" />
+          <Item first="startup" second="founder" />
         </div>
       </div>
       <div className="absolute bottom-0 m-8 flex flex-col gap-4 sm:flex-row sm:gap-8">
