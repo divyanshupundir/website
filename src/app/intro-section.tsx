@@ -29,7 +29,7 @@ export function IntroSection() {
         />
         <ItemWithLink
           first="connect"
-          second="lnkedin"
+          second="linkedin"
           link="https://www.linkedin.com/in/divyanshu-pundir-212933145/"
         />
         <ItemWithLink
