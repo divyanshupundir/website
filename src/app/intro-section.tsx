@@ -33,7 +33,7 @@ export function IntroSection() {
 function Item({ first, second }: { first: string; second: string }) {
   return (
     <p className="text-xs sm:text-sm">
-      {first} <span className="text-lg font-bold sm:text-2xl">{second}</span>
+      {first} <span className="text-lg font-bold sm:text-xl">{second}</span>
     </p>
   );
 }
@@ -50,7 +50,7 @@ function ItemWithLink({
   return (
     <Link href={link}>
       <p className="text-xs hover:text-accent sm:text-sm">
-        {first} <span className="text-lg font-bold sm:text-2xl">{second}</span>
+        {first} <span className="text-lg font-bold sm:text-xl">{second}</span>
       </p>
     </Link>
   );
