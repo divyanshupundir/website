@@ -22,9 +22,21 @@ export function IntroSection() {
       </div>
       <div className="absolute bottom-0 m-8 flex flex-col gap-4 sm:flex-row sm:gap-8">
         <ItemWithLink first="read" second="blog" link="/blog" />
-        <ItemWithLink first="follow" second="github" link="/" />
-        <ItemWithLink first="connect" second="lnkedin" link="/" />
-        <ItemWithLink first="view" second="behance" link="/" />
+        <ItemWithLink
+          first="follow"
+          second="github"
+          link="https://github.com/divyanshupundir"
+        />
+        <ItemWithLink
+          first="connect"
+          second="lnkedin"
+          link="https://www.linkedin.com/in/divyanshu-pundir-212933145/"
+        />
+        <ItemWithLink
+          first="view"
+          second="behance"
+          link="https://www.behance.net/divyanshupundir"
+        />
       </div>
     </section>
   );
