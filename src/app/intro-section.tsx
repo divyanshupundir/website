@@ -7,16 +7,15 @@ export function IntroSection() {
       <Image
         src="/home.jpg"
         alt="Home"
-        layout="fill"
-        objectFit="cover"
-        className="h-full w-full"
+        fill
+        className="h-full w-full object-cover"
       />
       <div className="absolute h-full w-full bg-gradient-to-r from-background/90 to-background/70" />
       <div className="absolute">
         <h1 className="m-8 text-4xl sm:text-6xl">divyanshu pundir</h1>
         <div className="m-8 flex flex-col gap-4 sm:flex-row sm:gap-8">
           <Item first="software" second="engineer" />
-          <Item first="open-source" second="contributor" />
+          <Item first="product" second="developer" />
           <Item first="startup" second="founder" />
         </div>
       </div>
