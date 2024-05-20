@@ -1,13 +1,13 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -72,9 +72,33 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            "--tw-prose-body": "hsl(var(--foreground))",
+            "--tw-prose-headings": "hsl(var(--foreground))",
+            "--tw-prose-lead": "hsl(var(--foreground))",
+            "--tw-prose-links": "hsl(var(--foreground))",
+            "--tw-prose-bold": "hsl(var(--foreground))",
+            "--tw-prose-counters": "hsl(var(--foreground))",
+            "--tw-prose-bullets": "hsl(var(--foreground))",
+            "--tw-prose-hr": "hsl(var(--foreground))",
+            "--tw-prose-quotes": "hsl(var(--foreground))",
+            "--tw-prose-quote-borders": "hsl(var(--foreground))",
+            "--tw-prose-captions": "hsl(var(--foreground))",
+            "--tw-prose-kbd": "hsl(var(--foreground))",
+            "--tw-prose-kbd-shadows": "hsl(var(--foreground))",
+            "--tw-prose-code": "hsl(var(--foreground))",
+            "--tw-prose-pre-code": "hsl(var(--foreground))",
+            "--tw-prose-pre-bg": "hsl(var(--secondary))",
+            "--tw-prose-th-borders": "hsl(var(--foreground))",
+            "--tw-prose-td-borders": "hsl(var(--foreground))",
+          },
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config
+  plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
+} satisfies Config;
 
-export default config
+export default config;
