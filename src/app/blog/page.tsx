@@ -27,7 +27,7 @@ function BlogListItem({
 }) {
   return (
     <Link href={link}>
-      <div className="space-y-2 transition-colors duration-500 hover:text-accent">
+      <div className="space-y-2 transition-colors duration-500 hover:text-primary">
         <div className="text-xs sm:text-sm">{date}</div>
         <p className="text-lg sm:text-xl">{title}</p>
       </div>
