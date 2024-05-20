@@ -60,7 +60,7 @@ function ItemWithLink({
 }) {
   return (
     <Link href={link}>
-      <p className="text-xs transition-colors duration-500 hover:text-accent sm:text-sm ">
+      <p className="text-xs transition-colors duration-500 hover:text-primary sm:text-sm ">
         {first} <span className="text-lg font-bold sm:text-xl">{second}</span>
       </p>
     </Link>
