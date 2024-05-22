@@ -1,0 +1,206 @@
+# A layman's guide to setting up an MDX blog with Next.js and Tailwind CSS
+
+## Background
+
+This blog is written from the perspective of a hardcore Android and IoT engineer who is entering the land of web and
+browsers while creating my personal website.
+
+So, why not write a blog about setting up the blog?
+
+I have taken most of the content from the [Next.js MDX](https://nextjs.org/docs/app/building-your-application/configuring/mdx)
+setup guide. The aim if this blog is to cut down the noise and provide the minimal steps for the setup. I have also
+addressed some configuration problems the documentation for which may require some digging.
+
+## The Stack
+
+- TypeScript
+- Next.js using app router
+- Tailwind CSS
+
+## The Basics
+
+I have assumed that the base project has been set up. Once done, the following files are the ones that we need to
+create or edit:
+
+```
+project/
+├── src/
+│   ├── app/
+│   │   ├── blog/
+│   │   │   └── (content)/
+│   │   │       ├── test-blog/
+│   │   │       │   └── page.mdx
+│   │   │       └── layout.tsx
+│   │   └── globals.css
+│   └── mdx-components.tsx
+├── next.config.mjs
+└── tailwind.config.ts
+```
+
+You can also refer to my personal website's [repository](https://github.com/divyanshupundir/website).
+
+Start by installing the required basic MDX packages:
+
+```bash
+npm install @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
+```
+
+Update the `next.config.mjs` file to use MDX in the project:
+
+```javascript
+import createMDX from "@next/mdx";
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+};
+
+const withMDX = createMDX();
+
+export default withMDX(nextConfig);
+```
+
+Create the `mdx-components.tsx` file with the following content:
+
+```typescript
+import type { MDXComponents } from 'mdx/types'
+ 
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    ...components,
+  }
+}
+```
+
+Now we can create the `page.mdx` file in the `test-blog` directory and let the app router do its magic.
+
+## Layout and Styling
+
+After completing the basic MDX setup, we can notice that even though the content is being rendered, the styling is not
+does not look good.
+
+To fix this, install the tailwind typography plugin:
+
+```bash
+npm install -D @tailwindcss/typography
+```
+
+Update the `tailwind.config.ts` file to include the mdx files and add the typography plugin:
+
+```typescript
+import type { Config } from "tailwindcss";
+
+const config = {
+  // ...
+  content: [
+    "./pages/**/*.{js,jsx,md,mdx,ts,tsx}",
+    "./components/**/*.{js,jsx,md,mdx,ts,tsx}",
+    "./app/**/*.{js,jsx,md,mdx,ts,tsx}",
+    "./src/**/*.{js,jsx,md,mdx,ts,tsx}",
+  ],
+  plugins: [require('@tailwindcss/typography')],
+} satisfies Config;
+
+export default config;
+```
+
+Now create the `layout.tsx` file with the following content for the common blog layout:
+
+```typescript
+export default function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <div className={"prose m-8 mx-auto"}>{children}</div>;
+}
+```
+
+This fixes the rendering of the different sections, but the text color is still a problem.
+
+To fix this, let's edit `tailwind.config.ts` again to configure the typography plugin using the colors defined in
+`globals.css`:
+
+```typescript
+import type { Config } from "tailwindcss";
+
+const config = {
+  // ...
+  content: [
+    "./pages/**/*.{js,jsx,md,mdx,ts,tsx}",
+    "./components/**/*.{js,jsx,md,mdx,ts,tsx}",
+    "./app/**/*.{js,jsx,md,mdx,ts,tsx}",
+    "./src/**/*.{js,jsx,md,mdx,ts,tsx}",
+  ],
+  plugins: [require('@tailwindcss/typography')],
+  theme: {
+    extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            "--tw-prose-body": "hsl(var(--foreground))",
+            "--tw-prose-headings": "hsl(var(--foreground))",
+            "--tw-prose-lead": "hsl(var(--foreground))",
+            "--tw-prose-links": "hsl(var(--foreground))",
+            "--tw-prose-bold": "hsl(var(--foreground))",
+            "--tw-prose-counters": "hsl(var(--foreground))",
+            "--tw-prose-bullets": "hsl(var(--foreground))",
+            "--tw-prose-hr": "hsl(var(--foreground))",
+            "--tw-prose-quotes": "hsl(var(--foreground))",
+            "--tw-prose-quote-borders": "hsl(var(--foreground))",
+            "--tw-prose-captions": "hsl(var(--foreground))",
+            "--tw-prose-kbd": "hsl(var(--foreground))",
+            "--tw-prose-kbd-shadows": "hsl(var(--foreground))",
+            "--tw-prose-code": "hsl(var(--foreground))",
+            "--tw-prose-pre-code": "hsl(var(--foreground))",
+            "--tw-prose-pre-bg": "hsl(var(--secondary))",
+            "--tw-prose-th-borders": "hsl(var(--foreground))",
+            "--tw-prose-td-borders": "hsl(var(--foreground))",
+          },
+        },
+      },
+    },
+  },
+} satisfies Config;
+
+export default config;
+```
+
+## Code Block Syntax Highlighting
+
+To add syntax highlighting to the code blocks, we will use the `remark` and `rehype` plugins. Most of the tooling is
+already available in the `@next/mdx` package. We just need to install a few more packages:
+
+```bash
+npm install remark-gfm rehype-pretty-code shiki
+```
+
+Finally, update the `next.config.mjs` file to include the plugins:
+
+```javascript
+import createMDX from "@next/mdx";
+import rehypePrettyCode from "rehype-pretty-code";
+import remarkGfm from "remark-gfm";
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+};
+
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [[rehypePrettyCode, { keepBackground: false }]],
+  },
+});
+
+export default withMDX(nextConfig);
+```
+
+## Useful Links
+
+- https://nextjs.org/docs/app/building-your-application/configuring/mdx
+- https://github.com/tailwindlabs/tailwindcss-typography
+- https://github.com/remarkjs/remark-gfm
+- https://rehype-pretty.pages.dev/
+- https://github.com/divyanshupundir/website

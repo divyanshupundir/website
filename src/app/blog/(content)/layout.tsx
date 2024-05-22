@@ -3,5 +3,5 @@ export default function BlogLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className={"prose mx-auto mt-8"}>{children}</div>;
+  return <div className={"prose m-8 mx-auto"}>{children}</div>;
 }
