@@ -90,7 +90,7 @@ const config = {
             "--tw-prose-kbd-shadows": "hsl(var(--foreground))",
             "--tw-prose-code": "hsl(var(--foreground))",
             "--tw-prose-pre-code": "hsl(var(--foreground))",
-            "--tw-prose-pre-bg": "hsl(var(--accent))",
+            "--tw-prose-pre-bg": "hsl(var(--secondary))",
             "--tw-prose-th-borders": "hsl(var(--foreground))",
             "--tw-prose-td-borders": "hsl(var(--foreground))",
           },
