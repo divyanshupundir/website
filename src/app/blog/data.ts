@@ -6,6 +6,12 @@ export interface BlogData {
 
 export const blogs: BlogData[] = [
   {
+    date: "May 22, 2024",
+    title:
+      "A layman's guide to setting up an MDX blog with Next.js and Tailwind CSS",
+    link: "/blog/next-js-mdx",
+  },
+  {
     date: "Sep 17, 2022",
     title: "A modern MAVLink library for the JVM written in Kotlin",
     link: "https://medium.com/urbanmatrix-technologies/a-modern-mavlink-library-for-the-jvm-written-in-kotlin-8108eff3aad7",
