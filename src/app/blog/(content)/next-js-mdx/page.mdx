@@ -168,16 +168,17 @@ export default config;
 
 ## Code Block Syntax Highlighting
 
-To add syntax highlighting to the code blocks, we will use the `rehype-pretty-code` plugin:
+To add syntax highlighting to the code blocks, we will use the `remark-gfm` and `rehype-pretty-code` plugins:
 
 ```bash
-npm install rehype-pretty-code shiki
+npm install remark-gfm rehype-pretty-code
 ```
 
 Finally, update the `next.config.mjs` file to include the plugins:
 
 ```javascript
 import createMDX from "@next/mdx";
+import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 
 /** @type {import('next').NextConfig} */
@@ -187,6 +188,7 @@ const nextConfig = {
 
 const withMDX = createMDX({
   options: {
+    remarkPlugins: [remarkGfm],
     rehypePlugins: [[rehypePrettyCode, { keepBackground: false }]],
   },
 });
