@@ -20,7 +20,6 @@
     "react": "^18",
     "react-dom": "^18",
     "rehype-pretty-code": "^0.13.2",
-    "remark-gfm": "^4.0.0",
     "shiki": "^1.6.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"

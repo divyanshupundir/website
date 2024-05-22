@@ -168,11 +168,10 @@ export default config;
 
 ## Code Block Syntax Highlighting
 
-To add syntax highlighting to the code blocks, we will use the `remark` and `rehype` plugins. Most of the tooling is
-already available in the `@next/mdx` package. We just need to install a few more packages:
+To add syntax highlighting to the code blocks, we will use the `rehype-pretty-code` plugin:
 
 ```bash
-npm install remark-gfm rehype-pretty-code shiki
+npm install rehype-pretty-code shiki
 ```
 
 Finally, update the `next.config.mjs` file to include the plugins:
@@ -180,7 +179,6 @@ Finally, update the `next.config.mjs` file to include the plugins:
 ```javascript
 import createMDX from "@next/mdx";
 import rehypePrettyCode from "rehype-pretty-code";
-import remarkGfm from "remark-gfm";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -189,7 +187,6 @@ const nextConfig = {
 
 const withMDX = createMDX({
   options: {
-    remarkPlugins: [remarkGfm],
     rehypePlugins: [[rehypePrettyCode, { keepBackground: false }]],
   },
 });
@@ -201,6 +198,5 @@ export default withMDX(nextConfig);
 
 - https://nextjs.org/docs/app/building-your-application/configuring/mdx
 - https://github.com/tailwindlabs/tailwindcss-typography
-- https://github.com/remarkjs/remark-gfm
 - https://rehype-pretty.pages.dev/
 - https://github.com/divyanshupundir/website
