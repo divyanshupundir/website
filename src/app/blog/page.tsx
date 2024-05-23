@@ -3,9 +3,9 @@ import { blogs } from "./data";
 
 export default function BlogPage() {
   return (
-    <div className="m-8">
+    <div className="m-4 sm:m-8">
       <h1 className="text-3xl sm:text-5xl">blog</h1>
-      <ul className="mt-10 space-y-8">
+      <ul className="mt-8 space-y-8 sm:mt-10">
         {blogs.map((blog) => (
           <li key={blog.link}>
             <BlogListItem {...blog} />
