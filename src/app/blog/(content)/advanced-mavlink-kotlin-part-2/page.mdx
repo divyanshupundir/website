@@ -1,0 +1,235 @@
+# Advanced mavlink-kotlin - Part 2: Utilities and extensions
+
+In the [previous part](/blog/advanced-mavlink-kotlin-part-1), we defined some core interfaces for working with MAVLink
+systems. Now let's build some utilities and extensions using these interfaces.
+
+The idea is to keep these functions simple and rely on the Kotlin Coroutines API to handle operations like timeouts,
+retries and cancellations.
+
+## MavRemoteNode
+
+### Receiving messages
+
+Firstly, let's add an extension function to the `MavRemoteNode` interface to receive a single message of a specific
+type.
+
+```kotlin
+suspend inline fun <reified T : MavMessage<T>> MavRemoteNode.receive(): T = message
+    .filterIsInstance<T>()
+    .first()
+```
+
+This function will block the current coroutine until a message of type `T` is received. We can also compose it with the
+`withTimeout` function to add a timeout.
+
+```kotlin
+val hb = withTimeout(5000) {
+    mavController.fcu.receive<Heartbeat>()
+}
+```
+
+This will throw a `TimeoutCancellationException` if a `heartbeat` message is not received from the FCU within 5
+seconds. If for some reason, we want to continue execution even if the timeout occurs, we can use the
+`withTimeoutOrNull` function instead.
+
+```kotlin
+val hb = withTimeoutOrNull(5000) {
+    mavController.fcu.receive<Heartbeat>()
+}
+```
+
+Sometimes, we may want to filter the message further based on some condition. We can add a variant of `receive` that
+takes a predicate.
+
+```kotlin
+suspend inline fun <reified T : MavMessage<T>> MavRemoteNode.receive(noinline predicate: (T) -> Boolean): T = message
+    .filterIsInstance<T>()
+    .first(predicate)
+```
+
+For example, if we want the BatteryStatus message with a specific battery ID.
+
+```kotlin
+val batteryStatus = mavController.fcu.receive<BatteryStatus> { it.id == 1.toUByte() }
+```
+
+## MavController
+
+### Get and set parameters
+
+Getting and setting FCU parameters are common operations and therefore we will be defining these extension functions on
+the `MavController` interface.
+
+```kotlin
+suspend fun MavController.getParam(id: String): Float = coroutineScope {
+    val ack = async { fcu.receive<ParamValue> { it.paramId == id } }
+    delay(10)
+
+    send(
+        ParamRequestRead(
+            targetSystem = fcu.systemId,
+            targetComponent = fcu.componentId,
+            paramId = id,
+            paramIndex = -1
+        )
+    )
+
+    ack.await().paramValue
+}
+
+suspend fun MavController.setParam(id: String, value: Float): Unit = coroutineScope {
+    val ack = async { fcu.receive<ParamValue> { it.paramId == id } }
+    delay(10)
+
+    send(
+        ParamSet(
+            targetSystem = fcu.systemId,
+            targetComponent = fcu.componentId,
+            paramId = id,
+            paramValue = value,
+            paramType = MavParamType.REAL32.wrap()
+        )
+    )
+
+    ack.await()
+}
+```
+
+There's a lot going on here, so let's break it down.
+
+The `getParam` function sends a `ParamRequestRead` message to the FCU and waits for a `ParamValue` message with the
+requested parameter ID. The function returns the parameter value. The `setParam` function sends a `ParamSet` message to
+the FCU and waits for a `ParamValue` message with the updated parameter value. The function returns nothing.
+
+You must be wondering why the `async` and `coroutineScope` functions are used here. We could have simply implemented
+the `getParam` and `setParam` functions as follows.
+
+```kotlin
+suspend fun MavController.getParam(id: String): Float {
+    send(
+        ParamRequestRead(
+            targetSystem = fcu.systemId,
+            targetComponent = fcu.componentId,
+            paramId = id,
+            paramIndex = -1
+        )
+    )
+
+    return fcu.receive<ParamValue> { it.paramId == id }.paramValue
+}
+
+suspend fun MavController.setParam(id: String, value: Float) {
+    send(
+        ParamSet(
+            targetSystem = fcu.systemId,
+            targetComponent = fcu.componentId,
+            paramId = id,
+            paramValue = value,
+            paramType = MavParamType.REAL32.wrap()
+        )
+    )
+
+    fcu.receive<ParamValue> { it.paramId == id }
+}
+```
+
+The reason why we prefer the former implementations is that they are more robust considering the fact that in certain
+cases, the response messages may be received by the underlying `MavConnection` faster than `MavRemoteNode.receive`
+is able to make the subscription to the message stream. Therefore, we need to ensure that the subscription is made
+before the request is sent. This is where the `async` function comes into play. It allows us to receive the message in
+a branched coroutine and await it later in the parent coroutine. The `coroutineScope` block is used for this branching.
+Also, the entire function if failed if the parent of the child coroutines fails. A `delay` of 10 milliseconds is added
+to ensure that the `reveice` function has received the desired state before the request is sent.
+
+### Send commands
+
+Similar to the `setParam` function, sending commands to the different systems are frequently used operations.
+
+```kotlin
+suspend fun MavController.sendCommandLong(
+    targetSystem: UByte,
+    targetComponent: UByte,
+    command: MavEnumValue<MavCmd>,
+    confirmation: UByte = 0u,
+    param1: Float = 0F,
+    param2: Float = 0F,
+    param3: Float = 0F,
+    param4: Float = 0F,
+    param5: Float = 0F,
+    param6: Float = 0F,
+    param7: Float = 0F,
+): CommandAck = coroutineScope {
+
+    val ack = async { fcu.receive<CommandAck> { it.command == command } }
+    delay(10)
+
+    send(
+        CommandLong(
+            targetSystem = targetSystem,
+            targetComponent = targetComponent,
+            command = command,
+            confirmation = confirmation,
+            param1 = param1,
+            param2 = param2,
+            param3 = param3,
+            param4 = param4,
+            param5 = param5,
+            param6 = param6,
+            param7 = param7
+        )
+    )
+
+    ack.await()
+}
+
+suspend fun MavController.sendCommandInt(
+    targetSystem: UByte,
+    targetComponent: UByte,
+    frame: MavEnumValue<MavFrame>,
+    command: MavEnumValue<MavCmd>,
+    x: Int,
+    y: Int,
+    z: Float,
+    current: UByte = 0u,
+    autocontinue: UByte = 0u,
+    param1: Float = 0F,
+    param2: Float = 0F,
+    param3: Float = 0F,
+    param4: Float = 0F,
+): CommandAck = coroutineScope {
+
+    val ack = async { fcu.receive<CommandAck> { it.command == command } }
+    delay(10)
+
+    send(
+        CommandInt(
+            targetSystem = targetSystem,
+            targetComponent = targetComponent,
+            frame = frame,
+            command = command,
+            current = current,
+            autocontinue = autocontinue,
+            param1 = param1,
+            param2 = param2,
+            param3 = param3,
+            param4 = param4,
+            x = x,
+            y = y,
+            z = z
+        )
+    )
+
+    ack.await()
+}
+```
+
+These have been implemented in a similar way to the get and set param functions. We send the commands in the parent
+coroutine while executing the `MavRemoteNode.receive` function concurrently in a child coroutine, the result of which
+is awaited in the at the end.
+
+## Conclusion
+
+We finally have a simple, yet powerful API to interact with MAVLink systems. These functions are robust and can be
+easily composed with Kotlin Coroutine library functions to handle complex transactions. However, a framework cannot be
+considered complete unless it addresses error handling and recovery mechanisms. In the next part of this series, we
+will build these mechanisms.
