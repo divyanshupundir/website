@@ -6,6 +6,11 @@ export interface BlogData {
 
 export const blogs: BlogData[] = [
   {
+    date: "May 30, 2024",
+    title: "Advanced mavlink-kotlin - Part 1: Core interfaces",
+    link: "/blog/advanced-mavlink-kotlin-part-1",
+  },
+  {
     date: "May 22, 2024",
     title:
       "A layman's guide to setting up an MDX blog with Next.js and Tailwind CSS",

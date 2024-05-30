@@ -11,13 +11,13 @@ I have taken most of the content from the [Next.js MDX](https://nextjs.org/docs/
 setup guide. The aim if this blog is to cut down the noise and provide the minimal steps for the setup. I have also
 addressed some configuration problems the documentation for which may require some digging.
 
-## The Stack
+## The stack
 
 - TypeScript
 - Next.js using app router
 - Tailwind CSS
 
-## The Basics
+## The basics
 
 I have assumed that the base project has been set up. Once done, the following files are the ones that we need to
 create or edit:
@@ -74,7 +74,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
 Now we can create the `page.mdx` file in the `test-blog` directory and let the app router do its magic.
 
-## Layout and Styling
+## Layout and styling
 
 After completing the basic MDX setup, we can notice that even though the content is being rendered, the styling is not
 does not look good.
@@ -166,7 +166,7 @@ const config = {
 export default config;
 ```
 
-## Code Block Syntax Highlighting
+## Code block syntax highlighting
 
 To add syntax highlighting to the code blocks, we will use the `remark-gfm` and `rehype-pretty-code` plugins:
 
@@ -196,7 +196,7 @@ const withMDX = createMDX({
 export default withMDX(nextConfig);
 ```
 
-## Useful Links
+## Useful links
 
 - https://nextjs.org/docs/app/building-your-application/configuring/mdx
 - https://github.com/tailwindlabs/tailwindcss-typography
