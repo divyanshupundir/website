@@ -12,7 +12,8 @@ microservices we need a layer of abstractions and utilities to make our lives ea
 This blog series will explore some of these. This is the first blog post in a multi-part series for advanced
 mavlink-kotlin users. In this first part, we will define some core interfaces and provide their implementations. These
 will help us interact with MAVLink systems in a more structured way. In the next parts, we will build on these to
-create utilities and extensions.
+create utility functions and we will also look into structured error handling. Finally, we will see how we can use these
+tools to implement some common MAVLink microservices.
 
 ## Dependencies
 
@@ -31,8 +32,6 @@ dependencies {
 ### MavSender
 
 ```kotlin
-import com.divpundir.mavlink.api.MavMessage
-
 interface MavSender {
 
     val systemId: UByte
@@ -51,9 +50,6 @@ We will implement this as a part of `MavController` defined later.
 ### MavRemoteNode
 
 ```kotlin
-import com.divpundir.mavlink.api.MavMessage
-import kotlinx.coroutines.flow.Flow
-
 interface MavRemoteNode {
 
     val systemId: UByte
@@ -69,12 +65,6 @@ is one of them. An implementation of `MavRemoteNode` will help us make our inter
 form, it will filter out messages from the FCU and provide them as a flow.
 
 ```kotlin
-import com.divpundir.mavlink.api.MavFrame
-import com.divpundir.mavlink.api.MavMessage
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-
 internal class FcuNode(
     mavFrame: Flow<MavFrame<out MavMessage<*>>>,
 ) : MavRemoteNode {
@@ -92,11 +82,6 @@ internal class FcuNode(
 Let's also create an `AllNode` implementation which will provide all messages from all nodes.
 
 ```kotlin
-import com.divpundir.mavlink.api.MavFrame
-import com.divpundir.mavlink.api.MavMessage
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-
 internal class AllNode(
     frames: Flow<MavFrame<out MavMessage<*>>>,
 ) : MavRemoteNode {
@@ -127,9 +112,6 @@ The `MavController` provides a single point of interaction with the MAVLink syst
 powerful enough to handle complex MAVLink transactions. Let's implement it.
 
 ```kotlin
-import com.divpundir.mavlink.adapters.coroutines.CoroutinesMavConnection
-import com.divpundir.mavlink.api.MavMessage
-
 internal class MavControllerImpl(
     override val systemId: UByte,
     override val componentId: UByte,
@@ -164,5 +146,9 @@ fun MavController(
 
 ## Conclusion
 
-Now that we have defined the core interfaces, we can start building on top of them. The next part of this series will
-focus on building utilities and extensions for the common operations.
+Now that we have defined the core interfaces, we can start building on top of them. The next parts of this series will
+focus on building utility functions and error handling mechanisms.
+
+## Read also
+
+- [Advanced mavlink-kotlin - Part 2: Utilities and extensions](/blog/advanced-mavlink-kotlin-part-2)
