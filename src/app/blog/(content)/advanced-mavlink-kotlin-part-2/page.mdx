@@ -20,7 +20,7 @@ suspend inline fun <reified T : MavMessage<T>> MavRemoteNode.receive(): T = mess
 ```
 
 This function will block the current coroutine until a message of type `T` is received. We can also compose it with the
-`withTimeout` function to add a timeout.
+`withTimeout` function.
 
 ```kotlin
 val hb = withTimeout(5000) {
@@ -47,7 +47,7 @@ suspend inline fun <reified T : MavMessage<T>> MavRemoteNode.receive(noinline pr
     .first(predicate)
 ```
 
-For example, if we want the BatteryStatus message with a specific battery ID.
+For example, if we want the `BatteryStatus` message with a specific battery ID.
 
 ```kotlin
 val batteryStatus = mavController.fcu.receive<BatteryStatus> { it.id == 1.toUByte() }
@@ -58,7 +58,7 @@ val batteryStatus = mavController.fcu.receive<BatteryStatus> { it.id == 1.toUByt
 ### Get and set parameters
 
 Getting and setting FCU parameters are common operations and therefore we will be defining these extension functions on
-the `MavController` interface.
+`MavController`.
 
 ```kotlin
 suspend fun MavController.getParam(id: String): Float = coroutineScope {
@@ -138,12 +138,12 @@ cases, the response messages may be received by the underlying `MavConnection` f
 is able to make the subscription to the message stream. Therefore, we need to ensure that the subscription is made
 before the request is sent. This is where the `async` function comes into play. It allows us to receive the message in
 a branched coroutine and await it later in the parent coroutine. The `coroutineScope` block is used for this branching.
-Also, the entire function if failed if the parent of the child coroutines fails. A `delay` of 10 milliseconds is added
-to ensure that the `reveice` function has received the desired state before the request is sent.
+Also, the entire function fails if the parent of the child coroutines fails. A `delay` of 10 milliseconds is added to
+ensure that the `receive` function has reached the desired state before the request is sent.
 
 ### Send commands
 
-Similar to the `setParam` function, sending commands to the different systems are frequently used operations.
+Similar to the `setParam` function, sending commands to the different systems is a frequently used operation.
 
 ```kotlin
 suspend fun MavController.sendCommandLong(
@@ -230,9 +230,9 @@ is awaited in the at the end.
 ## Conclusion
 
 We finally have a simple, yet powerful API to interact with MAVLink systems. These functions are robust and can be
-easily composed with Kotlin Coroutine library functions to handle complex transactions. However, a framework cannot be
-considered complete unless it addresses error handling and recovery mechanisms. In the next part of this series, we
-will build these mechanisms.
+easily composed with the Kotlin Coroutines library functions to handle complex transactions. However, a framework
+cannot be considered complete unless it addresses error handling and recovery mechanisms. In the next part of this
+series, we will build these mechanisms.
 
 ## Read also
 
