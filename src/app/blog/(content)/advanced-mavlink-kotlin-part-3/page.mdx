@@ -1,8 +1,7 @@
 # Advanced mavlink-kotlin - Part 3: Error handling
 
-In the previous parts of this series, we built a simple yet powerful API to interact with MAVLink systems. We
-implemented core interfaces and utility functions to handle complex transactions. Let's get to final important part of
-this framework, i.e. error handling.
+In the previous parts of this series, we implemented core interfaces and utility functions to handle complex MAVLink
+transactions. Let's get to the final important part of this framework, i.e., error handling.
 
 ## Sources of errors
 
@@ -17,7 +16,7 @@ Errors can occur at various levels of the communication stack.
 5. Timeouts.
 
 The first two cases are handled by mavlink-kotlin itself. IOExceptions are thrown when the connection is lost and
-invalid or corrupt messages are ignored. For the third case, the user need to implement their own checks.
+corrupt messages are ignored. For the third case, the users need to implement their own checks.
 
 To propagate and manage errors for the last two cases, let us define a custom exception class.
 
