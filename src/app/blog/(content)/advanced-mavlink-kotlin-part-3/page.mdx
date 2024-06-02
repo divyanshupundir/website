@@ -1,0 +1,197 @@
+# Advanced mavlink-kotlin - Part 3: Error handling
+
+In the previous parts of this series, we implemented core interfaces and utility functions to handle complex MAVLink
+transactions. Let's get to the final important part of this framework, i.e., error handling.
+
+## Sources of errors
+
+Errors can occur at various levels of the communication stack.
+
+1. Transport layer: The connection can be lost with the remote system.
+2. Protocol layer: The remote system can send an invalid message.
+3. Local system: Sometimes the local system can receive messages that are protocol compliant but are invalid
+   semantically.
+4. Remote system: The remote system can send an error messages. These are usually responses to commands indicating that
+   it was not executed successfully or that the parameters were invalid.
+5. Timeouts.
+
+The first two cases are handled by mavlink-kotlin itself. IOExceptions are thrown when the connection is lost and
+corrupt messages are ignored. For the third case, the users need to implement their own checks.
+
+To propagate and manage errors for the last two cases, let us define a custom exception class.
+
+## MavException and error propagation
+
+```kotlin
+class MavException(
+    message: String,
+    cause: Throwable? = null
+) : Exception(
+    message,
+    cause
+)
+```
+
+The need for this class arises from the fact that MAVLink error messages are not exceptions and are not propagated as
+such. We need to convert these messages into exceptions and use Kotlin's exception propagation mechanism to handle them
+in the concerned layers of our application.
+
+MAVLink error codes can be cryptic and not very informative to the user of our application. Therefore, when we
+implement the MAVLink microservices or transactions, we can use the `message` property of the `MavException` to provide
+a more user-friendly error message.
+
+## Managing CommandAck
+
+We'll use a fairly simple extension function to manage possible errors in the `CommandAck` message.
+
+```kotlin
+fun CommandAck.throwIfFailure() {
+    when (this.result.entry) {
+
+        MavResult.ACCEPTED, MavResult.IN_PROGRESS -> Unit
+
+        MavResult.TEMPORARILY_REJECTED -> throw MavException("Temporarily rejected")
+
+        MavResult.DENIED -> throw MavException("Denied")
+
+        MavResult.UNSUPPORTED -> throw MavException("Unsupported")
+
+        MavResult.FAILED -> throw MavException("Failed")
+
+        MavResult.CANCELLED -> throw MavException("Cancelled")
+
+        MavResult.COMMAND_LONG_ONLY -> throw MavException("Invalid command")
+
+        MavResult.COMMAND_INT_ONLY -> throw MavException("Invalid command")
+
+        MavResult.COMMAND_UNSUPPORTED_MAV_FRAME -> throw MavException("Unsupported")
+
+        null -> throw MavException("Unknown result")
+    }
+}
+```
+
+An example of how to use this function along with the `sendCommandLong` function defined in the previoud part of this
+series is shown below.
+
+```kotlin
+suspend fun startMission() {
+    mavController
+        .sendCommandLong(
+            targetSystem = mavController.fcu.systemId,
+            targetComponent = mavController.fcu.componentId,
+            command = MavCmd.MISSION_START.wrap(),
+        )
+        .throwIfFailure()
+}
+```
+
+## Managing timeouts
+
+Implementing timeouts is an important part of MAVLink communication. Generally, they can be quite complex to implement.
+But the Kotlin Coroutines library provides some powerful tools for the same. When recovering from a timeout is not
+possible, we will use the `withTimeout` function to throw a `TimeoutCancellationException`. For cases where we want to
+recover from a timeout, we will use the `withTimeoutOrNull` function and handle the `null` case ourself. For `Flow`
+based operations, we can use the `Flow.timeout` function.
+
+Implementing a timeout in the start mission example is a simple as wrapping the `sendCommandLong` function in a
+`withTimeout` block.
+
+```kotlin
+suspend fun startMission(): Unit = withTimeout(2000) {
+    mavController
+        .sendCommandLong(
+            targetSystem = mavController.fcu.systemId,
+            targetComponent = mavController.fcu.componentId,
+            command = MavCmd.MISSION_START.wrap(),
+        )
+        .throwIfFailure()
+}
+```
+
+A caveat to keep in mind while using the `withTimeout` function is that it will silently cancel the coroutines as the
+`TimeoutCancellationException` subclasses `CancellationException`. Therefore, it won't be rethrown by the `launch`
+block at the top level coroutine.
+
+## Retries
+
+IO failures are common in network communication. Retrying the operation after a delay is a common strategy to handle
+these failures. We will rely again on the Kotlin Coroutines library to implement a composable retry function. This can
+be used to wrap entire transactions or individual operations in a microservice that can fail.
+
+```kotlin
+private suspend inline fun <T> retryWithDelay(
+    times: Int,
+    delay: Duration,
+    block: () -> T
+): T {
+    repeat(times - 1) {
+        try {
+            return block()
+        } catch (_: Exception) {
+            coroutineContext.ensureActive()
+            delay(delay)
+        }
+    }
+
+    return block()
+}
+```
+
+The function signature is self explanatory. One thing to note is the use of `coroutineContext.ensureActive` as the
+operation can fail due to cancellation of the parent coroutine scope. This is important as it makes the function
+compliant with the structured concurrency model of Kotlin Coroutines.
+
+## Handling the propagated exceptions
+
+Let us finally define the last function in our API. This function is basically a wrapper around a `try-catch` block,
+which returns the result of the block as a `kotlin.Result` type.
+
+```kotlin
+suspend inline fun <R> mavResultOf(block: () -> R): Result<R> = try {
+    Result.success(block())
+} catch (e: Throwable) {
+    coroutineContext.ensureActive()
+    when (e) {
+        is TimeoutCancellationException -> Result.failure(Exception("Timeout"))
+        is IOException -> Result.failure(Exception("Connection error"))
+        is MavException -> Result.failure(e)
+        else -> Result.failure(Exception("Error"))
+    }
+}
+```
+
+## Usage example
+
+Let's take a very simple example to demonstrate the API we have built. We will call the same `startMission` function
+defined above and handle the exceptions. I am assuming that the context of this function is an Android `ViewModel`. But
+it can be used in any other context that provides a coroutine scope.
+
+```kotlin
+fun executeStartMission() {
+    viewModelScope.launch {
+        mavResultOf {
+            retryWithDelay(3, 1.seconds) {
+                missionService.startMission()
+            }
+        }.onSuccess {
+            emitAlert("Mission started")
+        }.onFailure {
+            emitAlert(it.message ?: "Unknown error")
+        }
+    }
+}
+```
+
+## Conclusion
+
+We now have all the important tools to build robust MAVLink microservice implementations. The API we have built is
+simple, yet powerful. It is also composable, chainable and can be extended to handle more complex use cases. We have
+even taken care of handling timeouts, retries and cancellations. This makes it great for building MAVLink transactions.
+
+In the next part, we will take an example of a real-world MAVLink service and implement it using the API we have built.
+
+## Read also
+
+- [Advanced mavlink-kotlin - Part 1: Core interfaces](/blog/advanced-mavlink-kotlin-part-1)
+- [Advanced mavlink-kotlin - Part 2: Utilities and extensions](/blog/advanced-mavlink-kotlin-part-2)
