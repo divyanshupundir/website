@@ -6,6 +6,11 @@ export interface BlogData {
 
 export const blogs: BlogData[] = [
   {
+    date: "Jun 2, 2024",
+    title: "Advanced mavlink-kotlin - Part 3: Error handling",
+    link: "/blog/advanced-mavlink-kotlin-part-3",
+  },
+  {
     date: "May 31, 2024",
     title: "Advanced mavlink-kotlin - Part 2: Utilities and extensions",
     link: "/blog/advanced-mavlink-kotlin-part-2",
