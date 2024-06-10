@@ -1,0 +1,119 @@
+# Advanced mavlink-kotlin - Part 4: Example micorservices
+
+We have finally reached the last part of the series. In this part, we will look at some examples of how to use the API
+that we have created thus far to implement MAVLink microservices.
+
+I will be implementing them as simple final classes, but in a production grade application, you would want to properly
+define your services as interfaces and implement them in a separate class. Also, you should to use a dependency
+injection framework like `Koin` or `Dagger/Hilt` to provide the dependencies to the services, repositories, view
+models, etc., based on the architecture of your application.
+
+## TelemetryService
+
+```kotlin
+class TelemetryService(
+    private val mavController: MavController
+) {
+    val armed: Flow<Boolean> = mavController.fcu.message
+        .filterIsInstance<Heartbeat>()
+        .map { it.baseMode.contains(MavModeFlag.SAFETY_ARMED) }
+
+    suspend fun requestDataStreams() {
+        requestDataStream(MavDataStream.RAW_SENSORS, 2u)
+        requestDataStream(MavDataStream.EXTENDED_STATUS, 2u)
+        requestDataStream(MavDataStream.RC_CHANNELS, 2u)
+        requestDataStream(MavDataStream.POSITION, 3u)
+        requestDataStream(MavDataStream.EXTRA1, 10u)
+        requestDataStream(MavDataStream.EXTRA2, 10u)
+        requestDataStream(MavDataStream.EXTRA3, 3u)
+    }
+
+    private suspend fun requestDataStream(stream: MavDataStream, rate: UShort) {
+        mavController.send(
+            RequestDataStream(
+                targetSystem = mavController.fcu.systemId,
+                targetComponent = mavController.all.componentId,
+                startStop = 1u,
+                reqStreamId = stream.value.toUByte(),
+                reqMessageRate = rate
+            )
+        )
+    }
+}
+```
+
+In this class, we have a `Flow` for the `armed` state. We are filtering the messages from the FCU for the `Heartbeat`
+messages and mapping them to the respective values by using the Kotlin Coroutines library functions.
+
+We can also break down a bigger service like `requestDataStreams` into smaller `suspend` functions to make the code
+easier to handle.
+
+## CalibrationService
+
+```kotlin
+class CalibrationService(
+    private val mavController: MavController
+) {
+    suspend fun calibrateMagnetometerSimple(): Unit = withTimeout(5000) {
+        val gpsRawInt = mavController.fcu.receive<GpsRawInt>()
+
+        when (gpsRawInt.fixType.entry) {
+            GpsFixType.NO_GPS, GpsFixType.NO_FIX,
+            GpsFixType._2D_FIX, GpsFixType.STATIC,
+            GpsFixType.PPP, null -> throw MavException("GPS lock required")
+
+            GpsFixType._3D_FIX, GpsFixType.DGPS,
+            GpsFixType.RTK_FLOAT, GpsFixType.RTK_FIXED -> Unit
+        }
+
+        mavController
+            .sendCommandLong(
+                targetSystem = mavController.fcu.systemId,
+                targetComponent = mavController.fcu.componentId,
+                command = MavCmd.FIXED_MAG_CAL_YAW.wrap(),
+            )
+            .throwIfFailure()
+    }
+}
+```
+
+Let's use this example to look at some of the concepts that we have learned in the previous parts of the series.
+
+1. The `withTimeout` function is used to set a timeout of 5 seconds for the calibration process.
+2. We are using the `receive` function to get the `GpsRawInt` message from the FCU.
+3. If the GPS is not in the correct state, we will throw a `MavException` with an appropriate message to cancel the
+   calibration.
+4. We are using the `sendCommandLong` function to send the calibration command to the FCU.
+5. The `throwIfFailure` function is used to throw an exception if the command fails.
+
+The `CalibrationService` can be used as follows.
+
+```kotlin
+fun executeCalibrateMagnetometerSimple() {
+    coroutineScope.launch {
+        mavResultOf {
+            calibrationService.calibrateMagnetometerSimple()
+        }.onSuccess {
+            emitAlert("Calibrated successfully")
+        }.onFailure {
+            emitAlert("Calibration failed: ${it.message ?: "Unknown error"}")
+        }
+    }
+}
+```
+
+## Conclusion
+
+In this series, we have learned how to create a MAVLink API using Kotlin. We have also learned how to use the API to
+implement MAVLink microservices. Though the examples are simple, you can use the concepts to create more complex
+services.
+
+I hope you have enjoyed the series and learned something new. Even if you are not working with MAVLink, you can use the
+concepts to architect solutions like this for similar systems.
+
+
+## Read also
+
+- [Advanced mavlink-kotlin - Part 1: Core interfaces](/blog/advanced-mavlink-kotlin-part-1)
+- [Advanced mavlink-kotlin - Part 2: Utilities and extensions](/blog/advanced-mavlink-kotlin-part-2)
+- [Advanced mavlink-kotlin - Part 3: Error handling](/blog/advanced-mavlink-kotlin-part-3)
