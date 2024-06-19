@@ -1,14 +1,10 @@
 import { ImageResponse } from "next/og";
-import { blogs } from "./blog/data";
+import { blogs } from "../data";
 
-// Route segment config
-export const runtime = "edge";
-
-export const alt = "About Acme";
-
-export const contentType = "image/png";
-
-export default async function Image({ params }: { params: { slug: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { slug: string } },
+) {
   const blogData = blogs.find((blog) => blog.link === `/blog/${params.slug}`);
 
   return new ImageResponse(
