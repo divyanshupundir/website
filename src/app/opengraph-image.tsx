@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { blogs } from "../data";
+import { blogs } from "./blog/data";
 
 // Route segment config
 export const runtime = "edge";
