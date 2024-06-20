@@ -30,9 +30,7 @@ export default async function PostPage({
                 variant="outline"
                 className="transition-colors duration-500 hover:bg-primary"
               >
-                <Link href="/blog" className="border">
-                  back
-                </Link>
+                <Link href="/blog">back</Link>
               </Button>
               <Button
                 asChild
