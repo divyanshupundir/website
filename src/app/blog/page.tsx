@@ -18,7 +18,7 @@ export default function BlogPage() {
 
 function PostListItem(data: PostData) {
   return (
-    <Link href={data.externalLink ?? `/blog/${data.id}`}>
+    <Link href={`/blog/${data.id}`}>
       <div className="space-y-2 transition-colors duration-500 hover:text-primary">
         <div className="text-xs sm:text-sm">{data.date}</div>
         <p className="text-lg sm:text-xl">{data.title}</p>
