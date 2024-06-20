@@ -3,6 +3,12 @@ import { getAllPosts } from "../post-data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+export function generateStaticParams() {
+  return getAllPosts().map((post) => ({
+    postId: post.id,
+  }));
+}
+
 export default async function PostPage({
   params,
 }: {
