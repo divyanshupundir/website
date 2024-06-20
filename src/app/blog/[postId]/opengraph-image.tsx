@@ -1,7 +1,15 @@
 import { ImageResponse } from "next/og";
 import { getAllPosts } from "../post-data";
 import { notFound } from "next/navigation";
-import Image from "next/image";
+
+export const alt = "Divyanshu's blog post";
+
+export const size = {
+  width: 1200,
+  height: 630,
+};
+
+export const contentType = "image/png";
 
 export default async function OpengraphImage({
   params,
@@ -30,7 +38,7 @@ export default async function OpengraphImage({
                 alt="Divyanshu Pundir"
                 width={100}
                 height={100}
-                tw="aspect-square rounded-full border-2 border-white object-cover"
+                tw="aspect-square rounded-full border-2 border-white"
               />
               <div tw="mx-8 text-3xl">divyanshu pundir</div>
             </div>
