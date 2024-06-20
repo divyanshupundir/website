@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { blogs } from "./data";
+import { getAllBlogs as getAllBlogData } from "./data";
 
 export default function BlogPage() {
   return (
     <div className="m-4 sm:m-8">
       <h1 className="text-3xl sm:text-5xl">blog</h1>
       <ul className="mt-8 space-y-8 sm:mt-10">
-        {blogs.map((blog) => (
+        {getAllBlogData().map((blog) => (
           <li key={blog.link}>
             <BlogListItem {...blog} />
           </li>

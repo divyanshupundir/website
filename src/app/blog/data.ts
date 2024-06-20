@@ -4,7 +4,11 @@ export interface BlogData {
   link: string;
 }
 
-export const blogs: BlogData[] = [
+export function getAllBlogs() {
+  return blogs;
+}
+
+const blogs: BlogData[] = [
   {
     date: "Jun 10, 2024",
     title: "Advanced mavlink-kotlin - Part 4: Example micorservices",
