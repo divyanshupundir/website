@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PostData, getAllPosts } from "./post-data";
+import { getAllPosts, type PostData } from "./post-data";
 
 function PostListItem(data: PostData) {
   return (
@@ -26,4 +26,3 @@ export default function BlogPage() {
     </div>
   );
 }
-
