@@ -36,7 +36,7 @@ export default function HomePage() {
         fill
         className="h-full w-full object-cover"
       />
-      <div className="absolute h-full w-full bg-gradient-to-r from-background/90 to-background/70" />
+      <div className="absolute h-full w-full bg-linear-to-r from-background/90 to-background/70" />
       <div className="absolute">
         <h1 className="m-4 text-4xl sm:m-8 sm:text-6xl">Divyanshu Pundir</h1>
         <div className="m-4 flex flex-col gap-4 sm:m-8 sm:flex-row sm:gap-8">

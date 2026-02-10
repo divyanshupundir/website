@@ -33,19 +33,17 @@ export default async function PostPage({
             <div className="mt-4">This post is hosted on an external site</div>
             <div className="mt-4 flex justify-between">
               <Button
-                asChild
                 variant="outline"
+                nativeButton={false}
+                render={<Link href="/blog">Back</Link>}
                 className="transition-colors duration-500 hover:bg-primary"
-              >
-                <Link href="/blog">Back</Link>
-              </Button>
+              />
               <Button
-                asChild
                 variant="outline"
+                nativeButton={false}
+                render={<Link href={data?.externalLink}>Continue</Link>}
                 className="transition-colors duration-500 hover:bg-primary"
-              >
-                <Link href={data?.externalLink}>Continue</Link>
-              </Button>
+              />
             </div>
           </div>
         </div>
