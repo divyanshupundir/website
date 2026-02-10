@@ -1,4 +1,4 @@
-export interface PostData {
+export type PostData = {
   date: string;
   title: string;
   id: string;
@@ -12,7 +12,7 @@ export function getAllPosts() {
 const posts: PostData[] = [
   {
     date: "Jun 10, 2024",
-    title: "Advanced mavlink-kotlin - Part 4: Example micorservices",
+    title: "Advanced mavlink-kotlin - Part 4: Example microservices",
     id: "advanced-mavlink-kotlin-part-4",
   },
   {

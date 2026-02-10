@@ -11,18 +11,24 @@ export const size = {
 
 export const contentType = "image/png";
 
+export function generateStaticParams() {
+  return getAllPosts().map((post) => ({
+    postId: post.id,
+  }));
+}
+
 export default async function OpengraphImage({
   params,
 }: {
-  params: { postId: string };
+  params: Promise<{ postId: string }>;
 }) {
-  const data = getAllPosts().find((post) => post.id === params.postId);
+  const { postId } = await params;
+  const data = getAllPosts().find((post) => post.id === postId);
 
   if (!data) {
     notFound();
   }
 
-  /* eslint-disable @next/next/no-img-element */
   return new ImageResponse(
     (
       <div tw="flex h-full w-full px-16 py-24 text-white bg-black">
@@ -38,7 +44,7 @@ export default async function OpengraphImage({
                 alt="Divyanshu Pundir"
                 width={100}
                 height={100}
-                tw="aspect-square rounded-full border-2 border-white"
+                tw="rounded-full border-2 border-white"
               />
               <div tw="mx-8 text-3xl">divyanshu pundir</div>
             </div>

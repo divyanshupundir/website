@@ -12,9 +12,10 @@ export function generateStaticParams() {
 export default async function PostPage({
   params,
 }: {
-  params: { postId: string };
+  params: Promise<{ postId: string }>;
 }) {
-  const data = getAllPosts().find((post) => post.id === params.postId);
+  const { postId } = await params;
+  const data = getAllPosts().find((post) => post.id === postId);
 
   if (!data) {
     notFound();
@@ -52,7 +53,7 @@ export default async function PostPage({
     );
   }
 
-  const PostContent = (await import(`../content/${params.postId}.mdx`)).default;
+  const PostContent = (await import(`../content/${postId}.mdx`)).default;
 
   return (
     <div className={"prose m-4 sm:m-8 sm:mx-auto"}>
