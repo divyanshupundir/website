@@ -46,7 +46,7 @@ export default async function OpengraphImage({
               height={100}
               tw="rounded-full border-2 border-white"
             />
-            <div tw="mx-8 text-3xl">divyanshu pundir</div>
+            <div tw="mx-8 text-3xl">Divyanshu Pundir</div>
           </div>
           <div tw="text-3xl">divpundir.com</div>
         </div>
