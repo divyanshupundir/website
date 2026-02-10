@@ -4,7 +4,7 @@ import Link from "next/link";
 function Item({ first, second }: { first: string; second: string }) {
   return (
     <p className="text-xs sm:text-sm">
-      {first} <span className="text-lg font-bold sm:text-xl">{second}</span>
+      {first} <span className="font-bold text-lg sm:text-xl">{second}</span>
     </p>
   );
 }
@@ -20,8 +20,8 @@ function ItemWithLink({
 }) {
   return (
     <Link href={link}>
-      <p className="text-xs transition-colors duration-500 hover:text-primary sm:text-sm ">
-        {first} <span className="text-lg font-bold sm:text-xl">{second}</span>
+      <p className="text-xs transition-colors duration-500 hover:text-primary sm:text-sm">
+        {first} <span className="font-bold text-lg sm:text-xl">{second}</span>
       </p>
     </Link>
   );
@@ -66,4 +66,3 @@ export default function HomePage() {
     </main>
   );
 }
-

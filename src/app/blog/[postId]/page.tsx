@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import { getAllPosts } from "../post-data";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { getAllPosts } from "../post-data";
 
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({
@@ -27,7 +27,7 @@ export default async function PostPage({
         <div className="m-4 border p-8 sm:min-w-[600px]">
           <div className="flex flex-col">
             <div className="text-xs sm:text-sm">{data.date}</div>
-            <div className="mt-2 text-lg font-semibold sm:text-xl">
+            <div className="mt-2 font-semibold text-lg sm:text-xl">
               {data.title}
             </div>
             <div className="mt-4">This post is hosted on an external site</div>

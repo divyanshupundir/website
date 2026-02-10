@@ -3,7 +3,7 @@ export type PostData = {
   title: string;
   id: string;
   externalLink?: string;
-}
+};
 
 export function getAllPosts() {
   return posts;

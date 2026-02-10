@@ -1,0 +1,63 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/dist",
+      "!**/.turbo",
+      "!**/dev-dist",
+      "!**/.zed",
+      "!**/.vscode",
+      "!**/routeTree.gen.ts",
+      "!**/src-tauri",
+      "!**/.nuxt",
+      "!bts.jsonc",
+      "!**/.expo",
+      "!**/.wrangler",
+      "!**/wrangler.jsonc",
+      "!**/.source",
+      "!**/_generated"
+    ]
+  },
+  "formatter": { "enabled": true, "indentWidth": 2, "indentStyle": "space" },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": { "noDocumentCookie": "off" },
+      "complexity": { "useLiteralKeys": "off" },
+      "nursery": {
+        "useSortedClasses": {
+          "level": "error",
+          "fix": "safe",
+          "options": { "attributes": ["className"], "functions": ["cn"] }
+        }
+      },
+      "correctness": {
+        "useUniqueElementIds": "off",
+        "noNestedComponentDefinitions": "off",
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error",
+        "noUnusedFunctionParameters": "error"
+      },
+      "a11y": {
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off",
+        "noRedundantRoles": "off",
+        "useButtonType": "off",
+        "noLabelWithoutControl": "off",
+        "useHtmlLang": "off",
+        "noSvgWithoutTitle": "off",
+        "useFocusableInteractive": "off",
+        "useAriaPropsForRole": "off"
+      }
+    }
+  },
+  "javascript": { "formatter": { "quoteStyle": "double" } },
+  "assist": { "enabled": true },
+  "css": { "parser": { "tailwindDirectives": true } }
+}
