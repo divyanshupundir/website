@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllPosts, type PostData } from "./post-data";
+import { getAllPosts, type PostData } from "@/lib/posts/data";
 
 function PostListItem(data: PostData) {
   return (

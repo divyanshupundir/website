@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
-import { getAllPosts } from "../post-data";
+import { getAllPosts } from "@/lib/posts/data";
 
 export const alt = "Divyanshu's blog post";
 

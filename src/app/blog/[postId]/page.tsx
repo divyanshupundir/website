@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { getAllPosts } from "../post-data";
+import { Button } from "@/lib/core-ui/button";
+import { getAllPosts } from "@/lib/posts/data";
 
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({
@@ -53,7 +53,8 @@ export default async function PostPage({
     );
   }
 
-  const PostContent = (await import(`../content/${postId}.mdx`)).default;
+  const PostContent = (await import(`@/lib/posts/content/${postId}.mdx`))
+    .default;
 
   return (
     <div className={"prose m-4 sm:m-8 sm:mx-auto"}>
