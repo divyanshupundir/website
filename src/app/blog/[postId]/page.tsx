@@ -30,21 +30,21 @@ export default async function PostPage({
             <div className="mt-2 text-lg font-semibold sm:text-xl">
               {data.title}
             </div>
-            <div className="mt-4">this post is hosted on an external site</div>
+            <div className="mt-4">This post is hosted on an external site</div>
             <div className="mt-4 flex justify-between">
               <Button
                 asChild
                 variant="outline"
                 className="transition-colors duration-500 hover:bg-primary"
               >
-                <Link href="/blog">back</Link>
+                <Link href="/blog">Back</Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
                 className="transition-colors duration-500 hover:bg-primary"
               >
-                <Link href={data?.externalLink}>continue</Link>
+                <Link href={data?.externalLink}>Continue</Link>
               </Button>
             </div>
           </div>
