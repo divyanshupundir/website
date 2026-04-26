@@ -55,7 +55,7 @@ const posts: PostData[] = [
     title: "Data Security in 4G Drones",
     id: "data-security-in-4g-drones",
     externalLink:
-      "https://www.urbanmatrix.co.in/whitepapers/data-security-in-4g-drones",
+      "https://www.qnulabs.com/whitepaper/data-security-in-4g-drones",
   },
   {
     date: "Jul 22, 2022",
