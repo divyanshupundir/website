@@ -15,14 +15,16 @@ function PostListItem(data: PostData) {
 export default function BlogPage() {
   return (
     <div className="m-4 sm:m-8">
-      <h1 className="text-3xl sm:text-5xl">Blog</h1>
-      <ul className="mt-8 space-y-8 sm:mt-10">
-        {getAllPosts().map((post) => (
-          <li key={post.id}>
-            <PostListItem {...post} />
-          </li>
-        ))}
-      </ul>
+      <div className="mx-auto max-w-3xl">
+        <h1 className="text-3xl sm:text-5xl">Blog</h1>
+        <ul className="mt-8 space-y-8 sm:mt-10">
+          {getAllPosts().map((post) => (
+            <li key={post.id}>
+              <PostListItem {...post} />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

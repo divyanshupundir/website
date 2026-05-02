@@ -55,7 +55,7 @@ export default async function PostPage({
     .default;
 
   return (
-    <div className={"prose m-4 sm:m-8 sm:mx-auto"}>
+    <div className={"prose m-4 sm:m-8 sm:mx-auto sm:max-w-3xl"}>
       <h3>{data.date}</h3>
       <h1>{data.title}</h1>
       <PostContent />
