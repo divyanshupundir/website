@@ -11,6 +11,20 @@ export function getAllPosts() {
 
 const posts: PostData[] = [
   {
+    date: "May 2, 2026",
+    title: "The Expense Mess Nobody Warns You About",
+    id: "expense-mess-nobody-warns-you-about",
+    externalLink:
+      "https://byteception.com/blog/expense-mess-nobody-warns-you-about",
+  },
+  {
+    date: "Apr 26, 2026",
+    title: "Refactor in the Direction Errors Take You",
+    id: "refactor-in-the-direction-errors-take-you",
+    externalLink:
+      "https://byteception.com/blog/refactor-in-the-direction-errors-take-you",
+  },
+  {
     date: "Jun 10, 2024",
     title: "Advanced mavlink-kotlin - Part 4: Example microservices",
     id: "advanced-mavlink-kotlin-part-4",
