@@ -11,6 +11,25 @@ export function getAllPosts() {
 
 const posts: PostData[] = [
   {
+    date: "May 31, 2026",
+    title: "Financial Hygiene Is a Feature",
+    id: "financial-hygiene-is-a-feature",
+    externalLink: "https://byteception.com/blog/financial-hygiene-is-a-feature",
+  },
+  {
+    date: "May 25, 2026",
+    title: "You're Not Bad at Money. Your Financial Data Is.",
+    id: "your-financial-data-is-fragmented",
+    externalLink:
+      "https://byteception.com/blog/your-financial-data-is-fragmented",
+  },
+  {
+    date: "May 18, 2026",
+    title: "When Implicit Context is Safe",
+    id: "when-implicit-context-is-safe",
+    externalLink: "https://byteception.com/blog/when-implicit-context-is-safe",
+  },
+  {
     date: "May 2, 2026",
     title: "The Expense Mess Nobody Warns You About",
     id: "expense-mess-nobody-warns-you-about",
