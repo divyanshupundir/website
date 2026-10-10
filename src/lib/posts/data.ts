@@ -11,6 +11,21 @@ export function getAllPosts() {
 
 const posts: PostData[] = [
   {
+    date: "Oct 9, 2026",
+    title:
+      "Writing Code Was Never the Whole Job. What Engineers Must Still Own in the Age of AI",
+    id: "writing-code-was-never-the-whole-job",
+    externalLink:
+      "https://aispectrumindia.com/opinion/34/1508/writing-code-was-never-the-whole-job-what-engineers-must-still-own-in-the-age-of-ai.html",
+  },
+  {
+    date: "Jun 14, 2026",
+    title: "Why Pagination at Enterprise Scale Needs a Plan from Day One",
+    id: "pagination-at-enterprise-scale",
+    externalLink:
+      "https://byteception.com/blog/pagination-at-enterprise-scale",
+  },
+  {
     date: "May 31, 2026",
     title: "Financial Hygiene Is a Feature",
     id: "financial-hygiene-is-a-feature",
